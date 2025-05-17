@@ -1,11 +1,15 @@
 from pydantic import BaseModel
 
-class BookCreate(BaseModel):
+class BookBase(BaseModel):
     title: str
     author: str
-    description: str | None = None
+    description: str
+    category_id: int  # 🆕 added
 
-class BookRead(BookCreate):
+class BookCreate(BookBase):
+    pass
+
+class BookRead(BookBase):
     id: int
 
     class Config:

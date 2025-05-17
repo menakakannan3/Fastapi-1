@@ -1,10 +1,8 @@
 from fastapi import FastAPI
-from app.api import book_routes, user_routes
-from app.database.session import Base, engine
+from app.api import book_routes, user_routes, category_routes  # <-- add this
 
-app = FastAPI(title="Books & Users API")
+app = FastAPI()
 
-Base.metadata.create_all(bind=engine)
-
-app.include_router(book_routes.router)
 app.include_router(user_routes.router)
+app.include_router(book_routes.router)
+app.include_router(category_routes.router)  # <-- add this
