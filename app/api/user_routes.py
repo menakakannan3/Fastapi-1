@@ -30,6 +30,7 @@ def read_users(db: Session = Depends(get_db)):
 
 # Login and return JWT token
 @router.post("/login")
+@router.post("/login")
 def login(email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
     user = crud_user.get_user_by_email(db, email)
     if not user or not verify_password(password, user.password):
@@ -42,4 +43,9 @@ def login(email: str = Form(...), password: str = Form(...), db: Session = Depen
         "role": role
     }
     access_token = create_access_token(token_data)
-    return {"access_token": access_token, "token_type": "bearer"}
+
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "role": role   # 👈 include role here so frontend knows the user type
+    }
