@@ -30,13 +30,17 @@ def read_users(db: Session = Depends(get_db)):
 
 # Login and return JWT token
 @router.post("/login")
-@router.post("/login")
 def login(email: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
     user = crud_user.get_user_by_email(db, email)
     if not user or not verify_password(password, user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    role = "admin" if user.name.lower() == "admin" else "user"
+    # Assign admin role ONLY if email exactly matches "admin@example.com" (case-sensitive)
+    if user.email == "admin@example.com":
+        role = "admin"
+    else:
+        role = "user"
+
     token_data = {
         "sub": user.email,
         "name": user.name,
@@ -47,5 +51,5 @@ def login(email: str = Form(...), password: str = Form(...), db: Session = Depen
     return {
         "access_token": access_token,
         "token_type": "bearer",
-        "role": role   # 👈 include role here so frontend knows the user type
+        "role": role   # include role for frontend
     }
